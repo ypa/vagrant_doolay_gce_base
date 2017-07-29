@@ -1,0 +1,1 @@
+# vagrant_doolay_gce_base
