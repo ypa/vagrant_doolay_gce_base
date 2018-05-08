@@ -83,7 +83,7 @@ Vagrant.configure(2) do |config|
 
     # Set the zone where the instance will be located. To find out available zones:
     # `gcloud compute zones list`.
-    google.zone = "us-west1-b"
+    google.zone = "europe-west3-b"
 
 
     # Set the machine type to use. To find out available types:
