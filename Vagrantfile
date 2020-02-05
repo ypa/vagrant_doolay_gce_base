@@ -79,7 +79,7 @@ Vagrant.configure(2) do |config|
     google.google_project_id = "findingmyanmar"
     google.google_client_email = "doolay@findingmyanmar.iam.gserviceaccount.com"
     google.google_json_key_location = "/home/vagrant/findingmyanmar-868c466e0aee.json"
-    google.name = "doolay-stretch64"
+    google.name = "doolay-buster"
 
     # Set the zone where the instance will be located. To find out available zones:
     # `gcloud compute zones list`.
@@ -92,7 +92,7 @@ Vagrant.configure(2) do |config|
 
     # Set the machine image to use. To find out available images:
     # `$ gcloud compute images list`.
-    google.image = "debian-9-stretch-v20180507"
+    google.image = "debian-10-buster-v20191210"
     
 
     override.ssh.username = "vagrant"
