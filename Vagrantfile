@@ -71,6 +71,12 @@ Vagrant.configure(2) do |config|
 
   config.vm.provision :shell, :path => "install/install.sh"
 
+
+  # Copy my own ssh keys from Thinkpad's /home/vagrant/vagrant_boxes/authorized_keys to the instance
+  # This file was actually copied from the existing VM instance (stretch) which was originally manually edited
+  # with my own id_rsa.pub keys. This allows me to directly ssh to the instances. Yan 02/05/2020
+  config.vm.provision "file", source: "~/vagrant_boxes/authorized_keys", destination: "~/.ssh/authorized_keys"
+
   # Enable agent forwarding over SSH connections.
   config.ssh.forward_agent = true
 
