@@ -13,10 +13,10 @@ apt-get install -y libjpeg-dev libtiff-dev zlib1g-dev libfreetype6-dev liblcms2-
 apt-get install -y redis-server
 
 # PostgreSQL
-echo "deb http://apt.postgresql.org/pub/repos/apt/ stretch-pgdg main" > /etc/apt/sources.list.d/pgdg.list
+echo "deb http://apt.postgresql.org/pub/repos/apt/ buster-pgdg main" > /etc/apt/sources.list.d/pgdg.list
 cat /vagrant/install/ACCC4CF8.asc | apt-key add
 apt-get update -y
-apt-get install -y postgresql-9.6 postgresql-client-9.6 postgresql-contrib-9.6 libpq-dev
+apt-get install -y postgresql-11 postgresql-client-11 postgresql-contrib-11 libpq-dev
 
 # Java for Elasticsearch
 apt install -y openjdk-8-jre-headless ca-certificates-java
@@ -24,24 +24,30 @@ apt install -y openjdk-8-jre-headless ca-certificates-java
 # Remove Python 3.5 (shipped with debian)
 apt-get remove -y python3
 
-# Python 3.6
-apt-get install -y libssl-dev libncurses-dev liblzma-dev libgdbm-dev libsqlite3-dev libbz2-dev tk-dev libreadline6-dev
-curl https://www.python.org/ftp/python/3.6.4/Python-3.6.4.tgz | tar xvz
-cd Python-3.6.4
+# Python
+export PYTHON_VERSION=3.8.1
+apt-get install -y libffi-dev libssl-dev libncurses-dev liblzma-dev libgdbm-dev libsqlite3-dev libbz2-dev tk-dev libreadline6-dev
+curl https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tgz | tar xvz
+cd Python-$PYTHON_VERSION
 ./configure --enable-optimizations
 make
 make install
 cd ..
-rm -rf Python-3.6.4
-apt-get remove -y libssl-dev libncurses-dev liblzma-dev libgdbm-dev libsqlite3-dev libbz2-dev tk-dev libreadline6-dev
+rm -rf Python-$PYTHON_VERSION
+apt-get remove -y libffi-dev libssl-dev libncurses-dev liblzma-dev libgdbm-dev libsqlite3-dev libbz2-dev tk-dev libreadline6-dev
 
 
-# Fabric (doesn't support Python 3 so installing into system's Python 2)
-apt-get install -y fabric
+# Install poetry and Fabric
+pip3 install poetry Fabric
 
 
 # We need virtualenv >13.0.0 in order to get pip 7 to automatically install
 pip3 install virtualenv
+
+
+# NVM and Node JS
+su - vagrant -c "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.0/install.sh | bash"
+su - vagrant -c "export NVM_DIR=\$HOME/.nvm && \. \$NVM_DIR/nvm.sh && nvm install 12.13"
 
 
 # Create vagrant pgsql superuser
@@ -64,10 +70,11 @@ rm elasticsearch-5.6.8.deb
 apt-get autoremove -y
 
 # Remove Python tests pycache (only used for testing Python itself. Saves 29.5MB)
-rm -rf /usr/local/lib/python3.6/test/__pycache__
+rm -rf /usr/local/lib/python$PYTHON_VERSION/test/__pycache__
 
 # Cleanup
 apt-get clean
+rm /var/lib/apt/lists/*
 
 echo "Zeroing free space to improve compression..."
 dd if=/dev/zero of=/EMPTY bs=1M

@@ -71,6 +71,12 @@ Vagrant.configure(2) do |config|
 
   config.vm.provision :shell, :path => "install/install.sh"
 
+
+  # Copy my own ssh keys from Thinkpad's /home/vagrant/vagrant_boxes/authorized_keys to the instance
+  # This file was actually copied from the existing VM instance (stretch) which was originally manually edited
+  # with my own id_rsa.pub keys. This allows me to directly ssh to the instances. Yan 02/05/2020
+  config.vm.provision "file", source: "~/vagrant_boxes/authorized_keys", destination: "~/.ssh/authorized_keys"
+
   # Enable agent forwarding over SSH connections.
   config.ssh.forward_agent = true
 
@@ -79,7 +85,7 @@ Vagrant.configure(2) do |config|
     google.google_project_id = "findingmyanmar"
     google.google_client_email = "doolay@findingmyanmar.iam.gserviceaccount.com"
     google.google_json_key_location = "/home/vagrant/findingmyanmar-868c466e0aee.json"
-    google.name = "doolay-stretch64"
+    google.name = "doolay-buster"
 
     # Set the zone where the instance will be located. To find out available zones:
     # `gcloud compute zones list`.
@@ -92,7 +98,7 @@ Vagrant.configure(2) do |config|
 
     # Set the machine image to use. To find out available images:
     # `$ gcloud compute images list`.
-    google.image = "debian-9-stretch-v20180507"
+    google.image = "debian-10-buster-v20191210"
     
 
     override.ssh.username = "vagrant"
